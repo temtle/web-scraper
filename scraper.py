@@ -11,6 +11,9 @@ headers = {
 }
 
 visited_urls = set()
+sum = 0
+counter = 0
+average = 0
 
 # Define the function to get info of a product from its url
 def get_product_info(url):
@@ -35,6 +38,10 @@ def get_product_info(url):
     # Product price
     price_element = soup.select_one("span.a-offscreen")
     price = price_element.text if price_element else None
+    try:
+        price = float(price)
+    except:
+        price = "No price listed"
 
     # Product Image
     image_element = soup.select_one("#landingImage")
@@ -44,6 +51,9 @@ def get_product_info(url):
     '''description_element = soup.select_one("#productDescription").text.strip()
     description = description_element.text.strip() if description_element else None'''
 
+    sum += price
+    counter += 1
+    
     return {
         "title": title,
         "price": price,
@@ -88,6 +98,7 @@ def main():
     search_url = "" # PUT SEARCH URL HERE!!!
     data = parse_listing(search_url)
     pd.DataFrame(data).to_csv("laptops.csv", index=False)
+    average = sum / counter
 
 if __name__ == "__main__":
     main()
